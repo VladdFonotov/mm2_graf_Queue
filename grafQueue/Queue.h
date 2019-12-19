@@ -129,7 +129,7 @@ template <class T>
 void TQueue<T>::Push(T a) {
 	if (Full())
 	{
-		char e[] = "Stack is Full";
+		char e[] = "Queue is Full";
 		throw e;
 	}
 	else
@@ -150,7 +150,7 @@ template <class T>
 T TQueue<T>::Pop() {
 	if (Empty())
 	{
-		char e[] = "Stack is Full";
+		char e[] = "Queue is Full";
 		throw e;
 	}
 	else
@@ -173,7 +173,7 @@ template <class T>
 T TQueue<T>::TFront() {
 	if (Empty())
 	{
-		char e[] = "Stack is Full";
+		char e[] = "Queue is Full";
 		throw e;
 	}
 	else
@@ -186,7 +186,7 @@ template <class T>
 T TQueue<T>::TBack() {
 	if (Empty())
 	{
-		char e[] = "Stack is Full";
+		char e[] = "Queue is Full";
 		throw e;
 	}
 	else

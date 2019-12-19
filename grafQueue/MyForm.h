@@ -1,5 +1,5 @@
 #pragma once
-#include"Queue.h"
+#include"Queue_L.h"
 
 namespace grafQueue {
 
@@ -21,6 +21,7 @@ namespace grafQueue {
 		double q;
 		int PopCount;
 		int PushCount;
+		int buf;
 
 		TQueue<int>* pQueue;
 		int CenterX, CenterY, Width, Height;
@@ -28,6 +29,7 @@ namespace grafQueue {
 		Random^ rndl;
 		Pen^ BlackPen;
 		Pen^ ClearPen;
+		Pen^ ALLCLPen;
 
 	private: System::Windows::Forms::Timer^  timer1;
 	private: System::Windows::Forms::TextBox^  textBox1;
@@ -44,8 +46,10 @@ namespace grafQueue {
 	private: System::Windows::Forms::Label^  label8;
 	private: System::Windows::Forms::Label^  label9;
 	private: System::Windows::Forms::Label^  label10;
+	private: System::Windows::Forms::TextBox^  textBox5;
+	private: System::Windows::Forms::Label^  label11;
 	private: System::Windows::Forms::Button^  button2;
-		
+
 	public:
 		MyForm(void)
 		{
@@ -61,6 +65,8 @@ namespace grafQueue {
 			BlackPen->Width = 15.0F;
 			ClearPen = gcnew Pen(Color::SlateBlue);
 			ClearPen->Width = 15.0F;
+			ALLCLPen = gcnew Pen(Color::SlateBlue);
+			ALLCLPen->Width = 500.0F;
 
 			CenterX = 450;
 			CenterY = 150;
@@ -69,6 +75,7 @@ namespace grafQueue {
 
 			PopCount = 0;
 			PushCount = 0;
+			buf = 0;
 		}
 
 	protected:
@@ -117,6 +124,8 @@ namespace grafQueue {
 			this->label8 = (gcnew System::Windows::Forms::Label());
 			this->label9 = (gcnew System::Windows::Forms::Label());
 			this->label10 = (gcnew System::Windows::Forms::Label());
+			this->textBox5 = (gcnew System::Windows::Forms::TextBox());
+			this->label11 = (gcnew System::Windows::Forms::Label());
 			this->SuspendLayout();
 			// 
 			// button1
@@ -177,6 +186,7 @@ namespace grafQueue {
 			this->label1->Size = System::Drawing::Size(256, 20);
 			this->label1->TabIndex = 5;
 			this->label1->Text = L"Максимальный размер очереди:";
+			this->label1->Click += gcnew System::EventHandler(this, &MyForm::label1_Click);
 			// 
 			// label2
 			// 
@@ -215,9 +225,9 @@ namespace grafQueue {
 			// 
 			this->button2->Location = System::Drawing::Point(100, 288);
 			this->button2->Name = L"button2";
-			this->button2->Size = System::Drawing::Size(75, 23);
+			this->button2->Size = System::Drawing::Size(86, 23);
 			this->button2->TabIndex = 9;
-			this->button2->Text = L"Стоп";
+			this->button2->Text = L"Пауза";
 			this->button2->UseVisualStyleBackColor = true;
 			this->button2->Click += gcnew System::EventHandler(this, &MyForm::button2_Click);
 			// 
@@ -285,12 +295,32 @@ namespace grafQueue {
 			this->label10->TabIndex = 15;
 			this->label10->Click += gcnew System::EventHandler(this, &MyForm::label10_Click);
 			// 
+			// textBox5
+			// 
+			this->textBox5->Location = System::Drawing::Point(105, 463);
+			this->textBox5->Name = L"textBox5";
+			this->textBox5->Size = System::Drawing::Size(100, 20);
+			this->textBox5->TabIndex = 16;
+			// 
+			// label11
+			// 
+			this->label11->AutoSize = true;
+			this->label11->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label11->Location = System::Drawing::Point(12, 463);
+			this->label11->Name = L"label11";
+			this->label11->Size = System::Drawing::Size(81, 20);
+			this->label11->TabIndex = 17;
+			this->label11->Text = L"Скорость";
+			// 
 			// MyForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackColor = System::Drawing::Color::SlateBlue;
 			this->ClientSize = System::Drawing::Size(878, 558);
+			this->Controls->Add(this->label11);
+			this->Controls->Add(this->textBox5);
 			this->Controls->Add(this->label10);
 			this->Controls->Add(this->label9);
 			this->Controls->Add(this->label8);
@@ -317,32 +347,36 @@ namespace grafQueue {
 #pragma endregion
 
 		void DrawQueue() {
-			int start = 360*pQueue->GetHead()/pQueue->GetMaxSize();
-			int finish = 360*(pQueue->GetSize())/pQueue->GetMaxSize();
+			int start = 360 * pQueue->GetHead() / pQueue->GetMaxSize();
+			int finish = 360 * (pQueue->GetSize()) / pQueue->GetMaxSize();
 			gr->DrawArc(BlackPen, CenterX, CenterY, Width, Height, start, finish);
 		}
 		void Clean()
 		{
-			int start = 360*pQueue->GetHead()/pQueue->GetMaxSize();
-			int finish = 360*(pQueue->GetSize())/pQueue->GetMaxSize();
+			int start = 360 * pQueue->GetHead() / pQueue->GetMaxSize();
+			int finish = 360 * (pQueue->GetSize()) / pQueue->GetMaxSize();
 
 			gr->DrawArc(ClearPen, CenterX, CenterY, Width, Height, start, finish);
 		}
 
 	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		gr->DrawLine(ALLCLPen,200, 288, 875,288);
 		MaxSize = Convert::ToInt32(textBox4->Text);
 		Size = Convert::ToInt32(textBox1->Text);
 		p = Convert::ToDouble(textBox2->Text);
 		q = Convert::ToDouble(textBox3->Text);
+		timer1->Interval = Convert::ToDouble(textBox5->Text);
 
-		pQueue = new TQueue<int>(MaxSize);
+		//pQueue = new TQueue<int>(MaxSize);
+		pQueue = new TQueue<int>;
 		for (int i = 0; i < Size; i++)
 		{
 			pQueue->Push(i);
 		}
-
 		DrawQueue();
 		timer1->Enabled = true;
+			button2->Text = "Пауза";
+			buf = 0;
 	}
 	private: System::Void timer1_Tick(System::Object^  sender, System::EventArgs^  e) {
 		Clean();
@@ -369,21 +403,37 @@ namespace grafQueue {
 	}
 	private: System::Void textBox1_TextChanged(System::Object^  sender, System::EventArgs^  e) {
 	}
-private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void textBox3_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void textBox4_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
-	timer1->Enabled = false;
-}
-private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
+	private: System::Void textBox2_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void textBox3_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void textBox4_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void button2_Click(System::Object^  sender, System::EventArgs^  e) {
 
-}
-private: System::Void label9_Click(System::Object^  sender, System::EventArgs^  e) {
-}
-private: System::Void label10_Click(System::Object^  sender, System::EventArgs^  e) {
-}
-};
+		timer1->Enabled = buf;
+		if (!buf)
+		{
+			button2->Text = "Продолжить";
+		}
+		else
+		{
+			button2->Text = "Пауза";
+		}
+		buf++;
+		if (buf==2)
+		{
+			buf = 0;
+		}
+	}
+	private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
+
+	}
+	private: System::Void label9_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void label10_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	private: System::Void label1_Click(System::Object^  sender, System::EventArgs^  e) {
+	}
+	};
 }
