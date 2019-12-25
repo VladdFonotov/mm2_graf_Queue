@@ -1,5 +1,5 @@
 #pragma once
-#include"Queue_L.h"
+#include"Queue.h"
 
 namespace grafQueue {
 
@@ -367,8 +367,8 @@ namespace grafQueue {
 		q = Convert::ToDouble(textBox3->Text);
 		timer1->Interval = Convert::ToDouble(textBox5->Text);
 
-		//pQueue = new TQueue<int>(MaxSize);
-		pQueue = new TQueue<int>;
+		pQueue = new TQueue<int>(MaxSize);
+		//pQueue = new TQueue<int>;
 		for (int i = 0; i < Size; i++)
 		{
 			pQueue->Push(i);
