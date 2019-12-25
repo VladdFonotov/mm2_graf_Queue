@@ -301,6 +301,7 @@ namespace grafQueue {
 			this->textBox5->Name = L"textBox5";
 			this->textBox5->Size = System::Drawing::Size(100, 20);
 			this->textBox5->TabIndex = 16;
+			this->textBox5->Text = L"15";
 			// 
 			// label11
 			// 
